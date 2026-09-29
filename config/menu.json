@@ -1,0 +1,14 @@
+[
+    {
+      "label": "RetroArch",
+      "exec": [
+        "/usr/bin/retroarch"
+      ]
+    },
+    {
+      "label": "Terminal",
+      "exec": [
+        "/usr/bin/weston-terminal"
+      ]
+    }
+]

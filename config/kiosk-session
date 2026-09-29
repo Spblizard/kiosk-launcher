@@ -1,0 +1,38 @@
+#!/bin/sh
+set -u
+
+: "${XDG_RUNTIME_DIR:=/run/user/$(id -u)}"
+export XDG_RUNTIME_DIR
+
+if [ ! -d "$XDG_RUNTIME_DIR" ]; then
+    echo "kiosk: $XDG_RUNTIME_DIR absend - no login-session" >&2
+    exit 1
+fi
+
+WAYLAND_SOCKET=kiosk
+
+weston --shell=kiosk-shell.so --socket="$WAYLAND_SOCKET" &
+WESTON_PID=$!
+
+export WAYLAND_DISPLAY="$WAYLAND_SOCKET"
+
+trap 'kill "$WESTON_PID" 2>/dev/null' EXIT INT TERM
+
+i=0
+while [ ! -S "$XDG_RUNTIME_DIR/$WAYLAND_SOCKET" ]; do
+    if ! kill -0 "$WESTON_PID" 2>/dev/null; then
+        echo "kiosk: weston finished on start" >&2
+        exit 1
+    fi
+    i=$((i + 1))
+    if [ "$i" -ge 100 ]; then
+        echo "kiosk: socket $WAYLAND_SOCKET not show through 10s" >&2
+        exit 1
+    fi
+    sleep 0.1
+done
+
+while kill -0 "$WESTON_PID" 2>/dev/null; do
+    /usr/bin/kiosk-launcher || true
+    sleep 0.2
+done

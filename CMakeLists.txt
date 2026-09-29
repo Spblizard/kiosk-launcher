@@ -29,3 +29,5 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE SDL3::SDL3 nlohmann_json::nlohmann_json GLESv2)
+
+install(TARGETS kiosk-launcher RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})

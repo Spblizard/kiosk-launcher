@@ -9,9 +9,9 @@ if [ ! -d "$XDG_RUNTIME_DIR" ]; then
     exit 1
 fi
 
-WAYLAND_SOCKET=kiosk
+WAYLAND_SOCKET=desktop
 
-weston --shell=kiosk-shell.so --socket="$WAYLAND_SOCKET" &
+weston --shell=desktop-shell.so --socket="$WAYLAND_SOCKET" &
 WESTON_PID=$!
 
 export WAYLAND_DISPLAY="$WAYLAND_SOCKET"
